@@ -35,8 +35,8 @@ public class Main {
         }
         int[] array = genRandomArray(size, min, max);
         System.out.println("Згенерований масив: ");
-        for(int i = 0; i < array.length; ++i){
-            System.out.print(array[i] + " ");
+        for (int j : array) {
+            System.out.print(j + " ");
         }
         System.out.println();
         Timer<Integer> timer = new Timer<>();
@@ -51,24 +51,6 @@ public class Main {
         }
     }
 
-    private static void testAllMethods(int testCases) throws ExecutionException, InterruptedException {
-        for(int i = 1; i < testCases; ++i){
-            int[] array = genRandomArray(i, -i, i);
-            int expectedSum = 0;
-            for (int element : array) {
-                expectedSum += element;
-            }
-            int sum = findSumUsingWorkDealing(array);
-            if(expectedSum != sum){
-                throw new RuntimeException("Помилка у функції findSumUsingWorkDealing; Очікувана сума: " + expectedSum + " Отримана сума: " + sum);
-            }
-            sum = findSumUsingWorkStealing(array);
-            if(expectedSum != sum){
-                throw new RuntimeException("Помилка у функції findSumUsingWorkStealing; Очікувана сума: " + expectedSum + " Отримана сума: " + sum);
-            }
-        }
-        System.out.println("Всі тести пройдено!");
-    }
     private static int findSumUsingWorkStealing(int[] array){
         int pairwiseSum;
         try (ForkJoinPool pool = new ForkJoinPool()) {
