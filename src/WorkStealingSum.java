@@ -15,23 +15,23 @@ public class WorkStealingSum extends RecursiveTask<Integer> {
         this.array = array;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
-        this.forkThreshold = 1000;
+        this.forkThreshold = 10_000;
     }
 
     @Override
     protected Integer compute() {
         final int workLength = endIndex - startIndex;
         if (workLength <= forkThreshold) {
-            int sum = endIndex % 2 == 1 ? array[endIndex-1] : 0;
-            for (int i = startIndex; i < endIndex - 1; i += 2) {
+            int sum = workLength % 2 == 0 ? 0 : array[endIndex-1];
+            for (int i = startIndex; i < (endIndex - 1); i += 2) {
                 sum += array[i] + array[i + 1];
             }
             return sum;
         }
         else {
             int splitPoint = (startIndex + endIndex) / 2;
-            PairwiseSumForkJoin.PairwiseSumTask leftTask = new PairwiseSumForkJoin.PairwiseSumTask(array, startIndex, splitPoint);
-            PairwiseSumForkJoin.PairwiseSumTask rightTask = new PairwiseSumForkJoin.PairwiseSumTask(array, splitPoint, endIndex);
+            WorkStealingSum leftTask = new WorkStealingSum(array, startIndex, splitPoint);
+            WorkStealingSum rightTask = new WorkStealingSum(array, splitPoint, endIndex);
             leftTask.fork();
             int rightResult = rightTask.compute();
             int leftResult = leftTask.join();
